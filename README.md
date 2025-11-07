@@ -1,5 +1,4 @@
 # 🕹 Command Line Tetris 🎮
-### By Ant Nosaryev
 An implementation of Classic Tetris that runs in your console window.
 
 ![tetris](https://user-images.githubusercontent.com/34826608/208236605-6fca4c80-bbea-4b07-a2bd-76149d8c662e.png)
@@ -12,11 +11,15 @@ An implementation of Classic Tetris that runs in your console window.
 - Permission to write file (stores highscore)
 
 ### Instructions
-`make`: build tetris.out executable  
-`./tetris.out`: play Tetris  
-`make run`: both of the above  
+```bash
+make
+```
+Builds tetris.out executable. If `make` is not available, see [makefile](makefile) for compile steps
 
-If `make` is not available, see makefile for compile steps
+```bash
+./tetris.out
+```
+Launches a game of Tetris.  
 
 ### Gameplay
 - Controls
@@ -29,5 +32,4 @@ If `make` is not available, see makefile for compile steps
 - Endless
   - No implemented final level or ending (aside from loss)
 - Highscore
-  - Saves highscore locally
-
+  - Saves highscore locally to `user.dat`
