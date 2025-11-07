@@ -1,4 +1,6 @@
+#include "display.h"
 #include "tetris.h"
+#include "player.h"
 
 extern int status;
 
@@ -26,13 +28,9 @@ int init_colors(){
 }
 
 void print_tile(int y, int x, int type){
-    if (type == 0){
-        mvprintw(y, x, ". ");
-    }else{
-        attron(COLOR_PAIR(type));
-        mvprintw(y, x, "  ");
-        attroff(COLOR_PAIR(type));
-    }
+    attron(COLOR_PAIR(type));
+    mvprintw(y, x, "  ");
+    attroff(COLOR_PAIR(type));
 }
 
 int print_stats(){
@@ -113,7 +111,13 @@ int print_controls(){
 }
 
 int update_board(){
-    int y, x, i;
+    int y, x, i, left, right, left_bottom, right_bottom;
+
+    left = get_left();
+    right = get_right();
+    left_bottom = get_x_bottom(left);
+    right_bottom = get_x_bottom(right);
+
     for (y = 19; y >= 0; y--){
         for (x = 0; x < 10; x++){
 
@@ -122,7 +126,7 @@ int update_board(){
                 player.y - y < 4 && player.y - y >= 0 &&
                 player.map[player.y - y][x - player.x] == 1){
                 print_tile(BOARD_Y+19 - y, BOARD_X + 2*x, player.type+1);
-            }else{
+            } else {
 
                 // search every board piece for something at coords
                 for (i = 0; i < board.len; i++){
@@ -136,10 +140,25 @@ int update_board(){
                         }
                     }
                 }
-                
+
+                if (i != board.len) {
+                    continue;
+                }
+
                 // no player or board piece
-                if (i == board.len){
-                    print_tile(BOARD_Y+19 - y, BOARD_X + 2*x, 0);
+                if (x == player.x + left && player.y - y > left_bottom) {
+                    if (x == player.x + right) {
+                        // at player left and right (vertical I)
+                        mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, "||");
+                    } else {
+                        // at player left
+                        mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, "| ");
+                    }
+                } else if (x == player.x + right && player.y - y > right_bottom) {
+                    // at player right
+                    mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, " |");
+                } else {
+                    mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, ". ");
                 }
             }
         }

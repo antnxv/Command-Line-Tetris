@@ -8,6 +8,40 @@ extern int next_type;
 extern Tetromino player;
 extern Board board;
 
+int get_left() {
+    int x, y;
+    for (x = 0; x < 4; x++) {
+        for (y = 0; y < 4; y++) {
+            if (player.map[y][x] == 1) {
+                return x;
+            }
+        }
+    }
+    return -1;
+}
+
+int get_right() {
+    int x, y;
+    for (x = 3; x >= 0; x--) {
+        for (y = 0; y < 4; y++) {
+            if (player.map[y][x] == 1) {
+                return x;
+            }
+        }
+    }
+    return -1;
+}
+
+int get_x_bottom(int x) {
+    int y;
+    for (y = 3; y >= 0; y--) {
+        if (player.map[y][x] == 1) {
+            return y;
+        }
+    }
+    return -1;
+}
+
 int rotate_cw(int c){
     int old[4][4];
     for (int i = 0; i < 4; i ++){

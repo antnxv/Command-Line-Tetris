@@ -1,6 +1,9 @@
 #ifndef PLAYER
 #define PLAYER
 
+int get_left();
+int get_right();
+int get_x_bottom(int x);
 int rotate_cw(int c);
 int move_left();
 int move_right();
