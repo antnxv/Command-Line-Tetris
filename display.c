@@ -146,7 +146,7 @@ int update_board(){
                 }
 
                 // no player or board piece
-                if (x == player.x + left && player.y - y > left_bottom) {
+                if (status && x == player.x + left && player.y - y > left_bottom) {
                     if (x == player.x + right) {
                         // at player left and right (vertical I)
                         mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, "||");
@@ -154,7 +154,7 @@ int update_board(){
                         // at player left
                         mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, "| ");
                     }
-                } else if (x == player.x + right && player.y - y > right_bottom) {
+                } else if (status && x == player.x + right && player.y - y > right_bottom) {
                     // at player right
                     mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, " |");
                 } else {

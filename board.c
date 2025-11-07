@@ -204,9 +204,4 @@ int end_game(){
     update_board();
     mvprintw(y++, x+8, "Game over!\n");
     mvprintw(y++, x+5, "Press Q to quit.\n");
-    while ((q = getch()) != 'q' && q != 'Q');
-
-    top = set_top();
-    endwin();
-    exit(0);
 }

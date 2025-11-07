@@ -65,17 +65,10 @@ void *move_down_passive(void *){
     }
 }
 
-void *render(void *){
-    int n = 1;
-    while (n){
-        struct timespec t0 = {0, FRAME_DELAY};
-        nanosleep(&t0, NULL);
-        n = update_board();
-        refresh();
-    }
-}
-
 int main(){
+    int q;
+    pthread_t down_id;
+
     srand(time(0));
     
     initscr();
@@ -93,19 +86,16 @@ int main(){
     next_type = choose_piece();
     next_piece();
 
-    int q;
     print_board();
     update_board();
     print_controls();
-    q = getch();
  
-    pthread_t down_id, render_id;
     pthread_create(&down_id, NULL, move_down_passive, NULL);
-    // pthread_create(&render_id, NULL, render, NULL);
     
-    while (q != 'q' && q != 'Q' && status){
-        move_tetromino(q);
-        q = getch();
+    while (((q = getch()) != 'q' && q != 'Q')){
+        if (status) {
+            move_tetromino(q);
+        }
     }
     
     top = set_top();
