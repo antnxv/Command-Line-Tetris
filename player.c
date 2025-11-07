@@ -1,6 +1,6 @@
-#include <tetris.h>
-#include <display.h>
-#include <board.h>
+#include "tetris.h"
+#include "display.h"
+#include "board.h"
 
 extern int delay;
 
@@ -80,22 +80,32 @@ int move_tetromino(int input){
     switch (input) {
         case KEY_DOWN:
         case 's':
+        case 'S':
             move_down();
             break;
         case KEY_LEFT:
         case 'a':
+        case 'A':
             move_left();
             break;
         case KEY_RIGHT:
         case 'd':
+        case 'D':
             move_right();
             break;
         case KEY_UP:
         case 'w':
+        case 'W':
             rotate_cw(1);
             break;
         case ' ':
             while(move_down()){}
             break;
+        default:
+            return 0; // skip update_board if rejected input
     }
+
+    update_board();
+    refresh();
+    return 1;
 }

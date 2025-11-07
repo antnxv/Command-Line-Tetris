@@ -1,7 +1,7 @@
-#include <tetris.h>
-#include <display.h>
-#include <board.h>
-#include <player.h>
+#include "tetris.h"
+#include "display.h"
+#include "board.h"
+#include "player.h"
 
 int status = 1;
 int delay = 999999999;
@@ -55,22 +55,23 @@ int maps[7][4][4] =
     }
 };
 
-void *move_down_passive(){
+void *move_down_passive(void *){
     while (status){
         struct timespec t0 = {0, delay};
         nanosleep(&t0, NULL);
         move_down();
+        update_board();
+        refresh();
     }
 }
 
-void *render(){
-    int m;
+void *render(void *){
     int n = 1;
     while (n){
         struct timespec t0 = {0, FRAME_DELAY};
         nanosleep(&t0, NULL);
-        m = refresh();
         n = update_board();
+        refresh();
     }
 }
 
@@ -100,9 +101,9 @@ int main(){
  
     pthread_t down_id, render_id;
     pthread_create(&down_id, NULL, move_down_passive, NULL);
-    pthread_create(&render_id, NULL, render, NULL);
+    // pthread_create(&render_id, NULL, render, NULL);
     
-    while (q != 'q' && status){
+    while (q != 'q' && q != 'Q' && status){
         move_tetromino(q);
         q = getch();
     }

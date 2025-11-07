@@ -1,32 +1,33 @@
 # 🕹 Command Line Tetris 🎮
-### By Ant Nosaryev and Youngmin Kwon
+### By Ant Nosaryev
 An implementation of Classic Tetris that runs in your console window.
 
 ![tetris](https://user-images.githubusercontent.com/34826608/208236605-6fca4c80-bbea-4b07-a2bd-76149d8c662e.png)
 
-### Info 📰
-- Instructions
-  - In the repo directory, execute `$ make run`
-    - If make is not available, see makefile for compile steps
+### Dependencies
+- gcc
+- make
+- ncurses-dev (`ncurses.h`)
+- pthread (`pthread.h`)
+- Permission to write file (stores highscore)
+
+### Instructions
+`make`: build tetris.out executable  
+`./tetris.out`: play Tetris  
+`make run`: both of the above  
+
+If `make` is not available, see makefile for compile steps
+
+### Gameplay
 - Controls
-  - W / Up Arrow Key: Rotate Piece Clockwise
-  - A / Left Arrow Key: Move Piece Left
-  - D / Right Arrow Key: Move Piece Right
-  - S / Down Arrow Key: Soft Drop
+  - W / Up Arrow: Rotate Piece Clockwise
+  - A / Left Arrow: Move Piece Left
+  - D / Right Arrow: Move Piece Right
+  - S / Down Arrow: Soft Drop
   - Spacebar: Hard Drop
   - Q: Quit
 - Endless
-  - No implemented final level or ending (aside from loss).
+  - No implemented final level or ending (aside from loss)
 - Highscore
-  - Saves highscore locally.
+  - Saves highscore locally
 
-### Dependencies 🛒
-- ncurses
-- pthread
-- gcc
-- make
-- Permission to write file (stores highscore)
-
-### Known Bugs 👾
-- Recurring bug causes the screen to fill with random terminal colour codes and text.
-  - Moving active piece over bugged locations map update location on board and revert bugged change.

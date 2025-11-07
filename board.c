@@ -1,5 +1,5 @@
-#include <tetris.h>
-#include <display.h>
+#include "tetris.h"
+#include "display.h"
 
 extern int status;
 extern int delay;
@@ -196,14 +196,15 @@ int next_piece(){
 int end_game(){
     int y = BOARD_Y + 8;
     int x = BOARD_X + 24;
+    int q;
 
     status = 0;
     set_top();
     print_board();
     update_board();
     mvprintw(y++, x+8, "Game over!\n");
-    mvprintw(y++, x+2, "Press any key to quit.\n");
-    getch();
+    mvprintw(y++, x+5, "Press Q to quit.\n");
+    while ((q = getch()) != 'q' && q != 'Q');
 
     top = set_top();
     endwin();
