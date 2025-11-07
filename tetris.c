@@ -89,13 +89,15 @@ int main(){
     print_board();
     update_board();
     print_controls();
- 
+    
+    q = getch();
     pthread_create(&down_id, NULL, move_down_passive, NULL);
     
-    while (((q = getch()) != 'q' && q != 'Q')){
+    while (q != 'q' && q != 'Q'){
         if (status) {
             move_tetromino(q);
         }
+        q = getch();
     }
     
     top = set_top();
