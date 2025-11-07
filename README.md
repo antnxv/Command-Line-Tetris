@@ -1,7 +1,7 @@
 # 🕹 Command Line Tetris 🎮
 An implementation of Classic Tetris that runs in your console window.
 
-![tetris](https://user-images.githubusercontent.com/34826608/208236605-6fca4c80-bbea-4b07-a2bd-76149d8c662e.png)
+<img width="674" height="741" alt="preview" src="https://github.com/user-attachments/assets/5b1557a3-2d55-4a4d-96a0-5378d34f3d3d" />
 
 ### Dependencies
 - gcc
