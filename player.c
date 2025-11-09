@@ -105,6 +105,7 @@ int move_down(){
         if (!next_piece()){
             player.y += 2;
             next_type = player.type;
+            pthread_mutex_unlock(&board_mutex);
             end_game();
         }
         return 0;

@@ -179,16 +179,11 @@ int end_game(){
     status = 0;
     set_top();
     print_base();
+    print_end();
 
     pthread_mutex_lock(&board_mutex);
         print_board();
     pthread_mutex_unlock(&board_mutex);
-
-    print_end();
-
-    pthread_mutex_lock(&io_mutex);
-        refresh();
-    pthread_mutex_unlock(&io_mutex);
 
     return 0;
 }

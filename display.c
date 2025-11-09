@@ -115,6 +115,7 @@ int print_controls(){
 int print_end() {
     mvprintw(BOARD_Y + 8, BOARD_X + 32, "Game over!\n");
     mvprintw(BOARD_Y + 9, BOARD_X + 29, "Press Q to quit.\n");
+    return 0;
 }
 
 int print_board(){
