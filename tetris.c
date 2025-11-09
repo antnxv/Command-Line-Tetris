@@ -1,10 +1,14 @@
 #include "tetris.h"
-#include "display.h"
 #include "board.h"
 #include "player.h"
+#include "display.h"
+
+#define INPUT_DELAY 5000000
 
 int status = 1;
 int delay = 999999999;
+pthread_mutex_t io_mutex;
+pthread_mutex_t board_mutex;
 
 int top = 0;
 int score = 0;
@@ -12,8 +16,8 @@ int level = 0;
 int lines = 0;
 
 int next_type;
-Tetromino player;
-Board board = {0, {}};
+tetromino_t player;
+board_t board = {};
 
 int maps[7][4][4] = 
 {
@@ -55,28 +59,41 @@ int maps[7][4][4] =
     }
 };
 
-void *move_down_passive(void *){
+void *move_down_passive(void *a){
+    struct timespec t0 = {0, delay};
+
     while (status){
-        struct timespec t0 = {0, delay};
         nanosleep(&t0, NULL);
-        move_down();
-        update_board();
-        refresh();
+
+        pthread_mutex_lock(&board_mutex);
+            move_down();
+            print_board();
+        pthread_mutex_unlock(&board_mutex);
     }
+    return NULL;
 }
+
+// // used to test i/o race conditions
+// void *refresh_debug(void *a){
+//     while (status){
+//         pthread_mutex_lock(&io_mutex);
+//             refresh();
+//         pthread_mutex_unlock(&io_mutex);
+//     }
+//     return NULL;
+// }
 
 int main(){
     int q;
-    pthread_t down_id;
+    pthread_t down_id, ref_debug_id;
+    struct timespec ti = {0, INPUT_DELAY};
 
     srand(time(0));
     
     initscr();
-    noecho();
-    refresh();
-
     clear();
     cbreak();
+    noecho();
     curs_set(0);
     keypad(stdscr, TRUE);
 
@@ -86,18 +103,33 @@ int main(){
     next_type = choose_piece();
     next_piece();
 
+    print_base();
     print_board();
-    update_board();
     print_controls();
-    
+
     q = getch();
+
+    nodelay(stdscr, TRUE); // non-blocking getch(), returns ERR if no input
+    pthread_mutex_init(&io_mutex, NULL);
+    pthread_mutex_init(&board_mutex, NULL);
     pthread_create(&down_id, NULL, move_down_passive, NULL);
+    // pthread_create(&ref_debug_id, NULL, refresh_debug, NULL);
     
     while (q != 'q' && q != 'Q'){
         if (status) {
-            move_tetromino(q);
+            q =  move_tetromino(q);
+        } else {
+            pthread_mutex_lock(&io_mutex);
+                q = getch();
+            pthread_mutex_unlock(&io_mutex);
         }
-        q = getch();
+
+        while (q == ERR) {
+            nanosleep(&ti, NULL);
+            pthread_mutex_lock(&io_mutex);
+                q = getch();
+            pthread_mutex_unlock(&io_mutex);
+        }
     }
     
     top = set_top();

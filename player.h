@@ -1,5 +1,5 @@
-#ifndef PLAYER
-#define PLAYER
+#ifndef PLAYER_H
+#define PLAYER_H
 
 int get_left();
 int get_right();
@@ -8,6 +8,13 @@ int rotate_cw(int c);
 int move_left();
 int move_right();
 int move_down();
-int move_tetromino(int input);
+char move_tetromino(int input);
 
-#endif
+typedef struct tetromino {
+    int map[4][4];
+    int type;
+    int x;
+    int y;
+} tetromino_t;
+
+#endif // PLAYER_H

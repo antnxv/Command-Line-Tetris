@@ -1,5 +1,5 @@
-#ifndef BOARD
-#define BOARD
+#ifndef BOARD_H
+#define BOARD_H
 
 int choose_piece();
 int no_collision_check();
@@ -11,4 +11,8 @@ int clear_lines();
 int next_piece();
 int end_game();
 
-#endif
+typedef struct board {
+    char tiles[20][10];
+} board_t;
+
+#endif // BOARD_H

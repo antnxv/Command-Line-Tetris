@@ -1,12 +1,15 @@
 #include "tetris.h"
-#include "display.h"
 #include "board.h"
+#include "player.h"
+#include "display.h"
+#include "pieces.h"
 
 extern int delay;
+extern pthread_mutex_t io_mutex;
+extern pthread_mutex_t board_mutex;
 
 extern int next_type;
-extern Tetromino player;
-extern Board board;
+extern tetromino_t player;
 
 int get_left() {
     int x, y;
@@ -50,7 +53,7 @@ int rotate_cw(int c){
         }
     }
 
-    if (player.type == I_PIECE-1 || player.type == O_PIECE-1){
+    if (player.type == I_PIECE || player.type == O_PIECE){
         // rotation about centre of 4x4 map
         for (int y = 0; y < 4; y ++){
             for (int x = 0; x < 4; x ++){
@@ -110,36 +113,49 @@ int move_down(){
 }
 
 // down up left right
-int move_tetromino(int input){
-    switch (input) {
-        case KEY_DOWN:
-        case 's':
-        case 'S':
-            move_down();
-            break;
-        case KEY_LEFT:
-        case 'a':
-        case 'A':
-            move_left();
-            break;
-        case KEY_RIGHT:
-        case 'd':
-        case 'D':
-            move_right();
-            break;
-        case KEY_UP:
-        case 'w':
-        case 'W':
-            rotate_cw(1);
-            break;
-        case ' ':
-            while(move_down()){}
-            break;
-        default:
-            return 0; // skip update_board if rejected input
-    }
+char move_tetromino(int input){
+    char q;
 
-    update_board();
-    refresh();
-    return 1;
+    pthread_mutex_lock(&board_mutex);
+
+        switch (input) {
+            case KEY_DOWN:
+            case 's':
+            case 'S':
+                move_down();
+                break;
+            case KEY_LEFT:
+            case 'a':
+            case 'A':
+                move_left();
+                break;
+            case KEY_RIGHT:
+            case 'd':
+            case 'D':
+                move_right();
+                break;
+            case KEY_UP:
+            case 'w':
+            case 'W':
+                rotate_cw(1);
+                break;
+            case ' ':
+                while(move_down()){}
+                break;
+            default:
+                pthread_mutex_unlock(&board_mutex);
+                pthread_mutex_lock(&io_mutex);
+                    q = getch();
+                pthread_mutex_unlock(&io_mutex);
+                return q; // skip print_board if rejected input
+        }
+    
+        print_board();
+    pthread_mutex_unlock(&board_mutex);
+    
+    pthread_mutex_lock(&io_mutex);
+        q = getch();
+    pthread_mutex_unlock(&io_mutex);
+
+    return q;
 }

@@ -1,6 +1,8 @@
-#include "display.h"
 #include "tetris.h"
+#include "board.h"
 #include "player.h"
+#include "display.h"
+#include "pieces.h"
 
 extern int status;
 
@@ -10,8 +12,8 @@ extern int level;
 extern int lines;
 
 extern int next_type;
-extern Tetromino player;
-extern Board board;
+extern tetromino_t player;
+extern board_t board;
 
 extern int maps[7][4][4];
 
@@ -62,8 +64,8 @@ int print_next(){
     mvprintw(3, 26, "Next");
     for (int y = 0; y < 3; y ++){
         for (int x = 0; x < 4; x ++){
-            if (maps[next_type][y][x] == 1){
-                print_tile(4+y, 24 + 2*x, next_type+1);
+            if (maps[next_type-1][y][x] == 1){
+                print_tile(4+y, 24 + 2*x, next_type);
             }else{
                 
                 mvprintw(4+y, 24 + 2*x, "  ");
@@ -73,7 +75,7 @@ int print_next(){
     return 1;
 }
 
-int print_board(){
+int print_base(){
     erase();
     mvprintw(1, 9, "Command Line Tetris\n\n");
 
@@ -85,7 +87,7 @@ int print_board(){
         mvprintw(BOARD_Y+19 - y, 6, "%02d", y);
 
         for (x = 0; x < 10; x++){
-            print_tile(BOARD_Y+19 - y, BOARD_X + 2*x, 0);
+            mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, ". ");
          }
     }
     mvprintw(BOARD_Y+21, 11, "0 1 2 3 4 5 6 7 8 9");
@@ -110,8 +112,14 @@ int print_controls(){
     return 1;
 }
 
-int update_board(){
-    int y, x, i, left, right, left_bottom, right_bottom;
+int print_end() {
+    mvprintw(BOARD_Y + 8, BOARD_X + 32, "Game over!\n");
+    mvprintw(BOARD_Y + 9, BOARD_X + 29, "Press Q to quit.\n");
+}
+
+int print_board(){
+    int y, x, dy, dx, type;
+    int left, right, left_bottom, right_bottom;
 
     left = get_left();
     right = get_right();
@@ -120,44 +128,40 @@ int update_board(){
 
     for (y = 19; y >= 0; y--){
         for (x = 0; x < 10; x++){
+            dx = x - player.x;
+            dy = player.y - y;
 
             // search player piece for something at coords
-            if (x - player.x < 4 && x - player.x >= 0 &&
-                player.y - y < 4 && player.y - y >= 0 &&
-                player.map[player.y - y][x - player.x] == 1){
-                print_tile(BOARD_Y+19 - y, BOARD_X + 2*x, player.type+1);
-            } else {
-
-                // search every board piece for something at coords
-                for (i = 0; i < board.len; i++){
-                    Tetromino temp = board.data[i];
-                    if (x - temp.x < 4 && x - temp.x >= 0 &&
-                        temp.y - y < 4 && temp.y - y >= 0){
-                        if (temp.map[temp.y - y][x - temp.x] == 1){
-                            // draw board piece with colour based on type
-                            print_tile(BOARD_Y+19 - y, BOARD_X + 2*x, temp.type+1);
-                            break;
-                        }
-                    }
+            if (dx >= 0 && dx < 4 &&
+                dy >= 0 && dy < 4 &&
+                player.map[dy][dx] == 1){
+                print_tile(BOARD_Y+19 - y, BOARD_X + 2*x, player.type);
+            }
+            
+            else {
+                // board tile
+                if ((type = board.tiles[y][x])) {
+                    print_tile(BOARD_Y+19 - y, BOARD_X + 2*x, type);
                 }
-
-                if (i != board.len) {
-                    continue;
-                }
-
-                // no player or board piece
-                if (status && x == player.x + left && player.y - y > left_bottom) {
+                
+                else if (status && x == player.x + left && player.y - y > left_bottom) {  
+                    // at player left and right (vertical I)
                     if (x == player.x + right) {
-                        // at player left and right (vertical I)
                         mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, "||");
-                    } else {
-                        // at player left
+                    }
+                    // at player left
+                    else {
                         mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, "| ");
                     }
-                } else if (status && x == player.x + right && player.y - y > right_bottom) {
-                    // at player right
+                }
+                
+                // at player right
+                else if (status && x == player.x + right && player.y - y > right_bottom) {
                     mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, " |");
-                } else {
+                }
+                
+                // normal empty tile
+                else {
                     mvprintw(BOARD_Y+19 - y, BOARD_X + 2*x, ". ");
                 }
             }
