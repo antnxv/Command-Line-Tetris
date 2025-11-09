@@ -3,16 +3,16 @@ CFLAGS := -I. -lncurses -lpthread
 all: tetris display board player
 	gcc tetris.o display.o board.o player.o -o tetris.out $(CFLAGS)
 
-tetris: tetris.c tetris.h display.h board.h
+tetris: tetris.c tetris.h board.h player.h display.h
 	gcc -c tetris.c $(CFLAGS)
 
-display: display.c display.h
+display: display.c tetris.h board.h player.h display.h pieces.h
 	gcc -c display.c $(CFLAGS)
 
-board: board.c board.h display.h
+board: board.c tetris.h board.h player.h display.h pieces.h
 	gcc -c board.c $(CFLAGS)
 
-player: player.c player.h display.h board.h
+player: player.c tetris.h board.h player.h display.h pieces.h
 	gcc -c player.c $(CFLAGS)
 
 run: all
