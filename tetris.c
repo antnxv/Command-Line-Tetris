@@ -60,9 +60,11 @@ int maps[7][4][4] =
 };
 
 void *move_down_passive(void *a){
-    struct timespec t0 = {0, delay};
+    struct timespec t0;
+    t0.tv_sec = 0;
 
     while (status){
+        t0.tv_nsec = delay;
         nanosleep(&t0, NULL);
 
         pthread_mutex_lock(&board_mutex);

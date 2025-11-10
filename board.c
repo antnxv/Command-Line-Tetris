@@ -128,7 +128,6 @@ int update_stats(int cleared){
 }
 
 int clear_lines() {
-    int new_lines[20];
     int y, x, new_y;
 
     // map old lines to new lines
