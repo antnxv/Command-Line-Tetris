@@ -14,7 +14,7 @@ An implementation of Classic Tetris that runs in your console window.
 ```bash
 make
 ```
-Builds tetris.out executable. If `make` is not available, see [makefile](makefile) for compile steps
+Builds tetris.out executable. If `make` is not available, see [Makefile](Makefile) for compile steps
 
 ```bash
 ./tetris.out
